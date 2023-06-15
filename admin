@@ -1,0 +1,203 @@
+HD LÀM TRANG QUẢN TRỊ
+
+1. Vào tm chứa layout (source\admin) lấy trang cate-list.html, cate-add.html,cate-edit cắt thành trang
+master.blade.php, header.blade.php, cate-list.blade.php, cate-add.blade.php, cate-edit.blade.php.
+Cấu trúc thư mục của các trang cate-list, cate-add, cate-edit trong view như sau:
+view\admin\category, master.blade.php, header.blade.php thì để trong thư mục view\admin.
+Trang master.blade.php:
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Cafe Amian&quot;&gt;
+    &lt;meta name=&quot;author&quot; content=&quot;&quot;&gt;
+    &lt;title&gt;Admin - Bán hàng&lt;/title&gt;
+    &lt;!-- Bootstrap Core CSS --&gt;
+    &lt;link href=&quot;{{
+asset(&#39;source/admin/bower_components/bootstrap/dist/css/bootstrap.min.css&#39;) }}&quot;
+rel=&quot;stylesheet&quot;&gt;
+    &lt;!-- MetisMenu CSS --&gt;
+    &lt;link href=&quot;{{ asset(&#39;source/admin/bower_components/metisMenu/dist/metisMenu.min.css&#39;)
+}}&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;!-- Custom CSS --&gt;
+    &lt;link href=&quot;{{ asset(&#39;source/admin/dist/css/sb-admin-2.css&#39;) }}&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;!-- Custom Fonts --&gt;
+    &lt;link href=&quot;{{ asset(&#39;source/admin/bower_components/font-awesome/css/font-
+awesome.min.css&#39;) }}&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+    &lt;!-- DataTables CSS --&gt;
+    &lt;link href=&quot;{{ asset(&#39;source/admin/bower_components/datatables-
+plugins/integration/bootstrap/3/dataTables.bootstrap.css&#39;) }}&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;!-- DataTables Responsive CSS --&gt;
+    &lt;link href=&quot;{{ asset(&#39;source/admin/bower_components/datatables-
+responsive/css/dataTables.responsive.css&#39;) }}&quot; rel=&quot;stylesheet&quot;&gt;
+    @yield(&#39;css&#39;)
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;wrapper&quot;&gt;
+        @include(&#39;admin.header&#39;)
+        @yield(&#39;content&#39;)
+    &lt;/div&gt;
+    &lt;!-- /#wrapper --&gt;
+    @yield(&#39;script&#39;)
+    &lt;!-- jQuery --&gt;
+
+   
+   
+    &lt;!-- Bootstrap Core JavaScript --&gt;
+    &lt;script src=&quot;{{ asset(&#39;source/admin/bower_components/jquery/dist/jquery.js&#39;)
+}}&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;{{ asset(&#39;source/admin/bower_components/bootstrap/dist/js/bootstrap.min.js&#39;)
+}}&quot;&gt;&lt;/script&gt;
+   
+    &lt;!-- Metis Menu Plugin JavaScript --&gt;
+    &lt;script src=&quot;{{ asset(&#39;source/admin/bower_components/metisMenu/dist/metisMenu.min.js&#39;)
+}}&quot;&gt;&lt;/script&gt;
+    &lt;!-- Custom Theme JavaScript --&gt;
+    &lt;script src=&quot;{{ asset(&#39;source/admin/dist/js/sb-admin-2.js&#39;) }}&quot;&gt;&lt;/script&gt;
+    &lt;!-- DataTables JavaScript --&gt;
+    &lt;!-- &lt;script src=&quot;{{
+asset(&#39;source/admin/bower_components/DataTables/media/js/jquery.dataTables.min.js&#39;)
+}}&quot;&gt;&lt;/script&gt; --&gt;
+    &lt;!-- &lt;script src=&quot;{{ asset(&#39;source/admin/bower_components/datatables-
+plugins/integration/bootstrap/3/dataTables.bootstrap.min.js&#39;) }}&quot;&gt;&lt;/script&gt; --&gt;
+    &lt;!-- Page-Level Demo Scripts - Tables - Use for reference --&gt;
+    &lt;!-- &lt;script&gt;
+    $(document).ready(function() {
+        $(&#39;#dataTables-example&#39;).DataTable({
+                responsive: true
+        });
+    });
+    &lt;/script&gt; --&gt;
+   
+&lt;/body&gt;
+&lt;/html&gt;
+
+2. Tạo model Category bằng câu lệnh:
+php artisan make:model Category
+Mở file app\Models\Category.php, thêm vào:
+protected $table=&#39;type_products&#39;;
+protected $fillable=[&#39;name&#39;,&#39;description&#39;,&#39;image&#39;];
+3. Tạo controller CategoryController bằng câu lệnh
+php artisan make:controller CategoryController
+Mở CategoryController.php tạo các hàm thêm sửa xóa.
+4. Vào view cate-list.blade.php, lấy dữ liệu từ biến $cates đã lấy ở hàm getCateList() để
+hiển thị ra bảng dữ liệu.
+5. Viết route kiểm tra kết quả trang cate-list.blade.php
+LÀM ĐĂNG NHẬP CHO PHẦN QUẢN TRỊ
+1. Viết route:
+Route::get(&#39;/admin/dangnhap&#39;,[UserController::class,&#39;getLogin&#39;])-&gt;name(&#39;admin.getLogin&#39;);
+Route::post(&#39;/admin/dangnhap&#39;,[UserController::class,&#39;postLogin&#39;])-
+&gt;name(&#39;admin.postLogin&#39;);
+
+Route::get(&#39;/admin/dangxuat&#39;,[UserController::class,&#39;getLogout&#39;]);
+2. Tạo UserController bằng câu lệnh: php artisan make:controller UserController
+Mở UserController, viết hàm getLogin(), postLogin(), getLogout():
+use Illuminate\Support\Facades\Auth;
+public function getLogin(){
+        return view(&#39;admin.login&#39;);
+    }
+    public function postLogin(Request $req){
+        $this-&gt;validate($req,
+        [
+            &#39;email&#39;=&gt;&#39;required|email&#39;,
+            &#39;password&#39;=&gt;&#39;required|min:6|max:20&#39;
+        ],
+        [
+            &#39;email.required&#39;=&gt;&#39;Vui lòng nhập email&#39;,
+            &#39;email.email&#39;=&gt;&#39;Không đúng định dạng email&#39;,
+            &#39;password.required&#39;=&gt;&#39;Vui lòng nhập mật khẩu&#39;,
+            &#39;password.min&#39;=&gt;&#39;Mật khẩu ít nhất 6 ký tự&#39;
+        ]
+        );
+        $credentials=array(&#39;email&#39;=&gt;$req-&gt;email,&#39;password&#39;=&gt;$req-&gt;password);
+        if(Auth::attempt($credentials)){
+            return redirect(&#39;/admin/category/danhsach&#39;)-
+&gt;with([&#39;flag&#39;=&gt;&#39;alert&#39;,&#39;message&#39;=&gt;&#39;Đăng nhập thành công&#39;]);
+        }
+        else{
+            return redirect()-&gt;back()-&gt;with([&#39;flag&#39;=&gt;&#39;danger&#39;,&#39;thongbao&#39;=&gt;&#39;Đăng nhập không
+thành công&#39;]);
+        }
+    }
+    public function getLogout(Request $request)
+    {
+        Auth::logout();
+        $request-&gt;session()-&gt;invalidate();
+        $request-&gt;session()-&gt;regenerateToken();
+        return redirect()-&gt;route(&#39;admin.getLogin&#39;);
+    }
+3. Tạo view login.blade.php nằm trong thư mục view\admin, đặt tên cho các input và thêm
+thuộc tính action và method của thẻ form như sau:
+  &lt;form action=&quot;{{ route(&#39;admin.postLogin&#39;) }}&quot; method=&quot;post&quot; class=&quot;beta-form-checkout&quot;&gt;
+  @csrf
+
+4. Viết nhóm route cho phép truy cập vào các route của level quản trị:
+Route::group([&#39;prefix&#39;=&gt;&#39;admin&#39;,&#39;middleware&#39;=&gt;&#39;adminLogin&#39;],function(){ 
+    Route::group([&#39;prefix&#39;=&gt;&#39;category&#39;],function(){
+            // admin/category/danhsach
+            Route::get(&#39;danhsach&#39;,[CategoryController::class,&#39;getCateList&#39;])-
+&gt;name(&#39;admin.getCateList&#39;);
+
+            Route::get(&#39;them&#39;,[CategoryController::class,&#39;getCateAdd&#39;])-
+&gt;name(&#39;admin.getCateAdd&#39;);
+            Route::post(&#39;them&#39;,[CategoryController::class,&#39;postCateAdd&#39;])-
+&gt;name(&#39;admin.postCateAdd&#39;);
+            Route::get(&#39;xoa/{id}&#39;,[CategoryController::class,&#39;getCateDelete&#39;])-
+&gt;name(&#39;admin.getCateDelete&#39;);
+            Route::get(&#39;sua/{id}&#39;,[CategoryController::class,&#39;getCateEdit&#39;])-
+&gt;name(&#39;admin.getCateEdit&#39;);
+            Route::post(&#39;sua/{id}&#39;,[CategoryController::class,&#39;postCateEdit&#39;])-
+&gt;name(&#39;admin.postCateEdit&#39;);
+        });
+//viết tiếp các route khác cho crud products, users,.... thì viết tiếp
+});
+5.+ Tạo middleware adminLogin bằng câu lệnh artisan:
+php artisan make:middleware AdminLoginMiddleware
++ Mở file middleware vừa tạo: app\Http\Middleware\AdminLoginMiddleware.php, tại hàm
+Handle(), viết các câu lệnh chỉ cho phép user có quyền level=1 hoặc =2 được phép truy
+cập vào hệ thống như sau:
+//dd(&quot;phải cần có quyền truy cập admin hoặc kỹ thuật viên&quot;);
+        if(Auth::check()){
+            $user=Auth::user();
+            if($user-&gt;level==1 || $user-&gt;level==2){
+                return $next($request);
+            }
+            else {
+                return redirect(&#39;/dangnhap&#39;);
+            }
+        }
+        else {
+            return redirect(&#39;/dangnhap&#39;);
+        }
+
++ Đăng ký middeware vào hệ thống bằng cách: mở file app\Http\Kernel.php, tại biến
+$routeMiddleware, thêm dòng code này vào:
+
+  &#39;adminLogin&#39;=&gt;&#39;\App\Http\Middleware\AdminLoginMiddleware::class&#39;
+
+6. Chạy kiểm thử trang login của admin.
+HD chức năng thêm sửa xóa loại sản phẩm.
+1. Cắt layout cate-add.html, cate-edit.html thành các trang cate-add.blade.php,
+cate-edit.blade.php để trong thư mục admin\category.
+2. Mở CategoryController viết các hàm thêm sửa xóa (xem trong file cô đã gửi)
+3. Viết route cho thêm sửa xóa loại sản phẩm (để trong nhóm route có
+prefix=’category’:
+
+            Route::get(&#39;them&#39;,[CategoryController::class,&#39;getCateAdd&#39;])-
+&gt;name(&#39;admin.getCateAdd&#39;);
+            Route::post(&#39;them&#39;,[CategoryController::class,&#39;postCateAdd&#39;])-
+&gt;name(&#39;admin.postCateAdd&#39;);
+            Route::get(&#39;xoa/{id}&#39;,[CategoryController::class,&#39;getCateDelete&#39;])-
+&gt;name(&#39;admin.getCateDelete&#39;);
+            Route::get(&#39;sua/{id}&#39;,[CategoryController::class,&#39;getCateEdit&#39;])-
+&gt;name(&#39;admin.getCateEdit&#39;);
+
+            Route::post(&#39;sua/{id}&#39;,[CategoryController::class,&#39;postCateEdit&#39;])-
+&gt;name(&#39;admin.postCateEdit&#39;);
+
+4. Vào các trang view cate-add.blade.php, cate-edit.blade.php đặt tên cho các input
+và đưa các biến lấy từ các hàm ở controller ra để hiển thị (xem trong file cô
+gửi).
+5. Kiểm thử
